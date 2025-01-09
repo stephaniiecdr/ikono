@@ -1,4 +1,4 @@
-package edu.pradita.p14.javafx;
+package org.ikono.desktop.main;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

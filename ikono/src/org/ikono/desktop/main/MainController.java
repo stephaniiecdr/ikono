@@ -1,4 +1,4 @@
-package edu.pradita.p14.javafx;
+package org.ikono.desktop.main;
 
 import java.awt.Desktop;
 import java.io.File;
@@ -13,6 +13,7 @@ import org.eclipse.birt.report.engine.api.IReportEngineFactory;
 import org.eclipse.birt.report.engine.api.IReportRunnable;
 import org.eclipse.birt.report.engine.api.IRunAndRenderTask;
 import org.eclipse.birt.report.engine.api.PDFRenderOption;
+import org.ikono.desktop.form.IForm;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -51,7 +52,7 @@ public class MainController {
 	@FXML
 	private void openItem() {
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("Item.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/ikono/desktop/item/Item.fxml"));
 			Parent itemFormRoot = loader.load();
 			centerPane.setCenter(itemFormRoot);
 			currentForm = loader.getController();
@@ -64,7 +65,7 @@ public class MainController {
 	@FXML
 	private void openSalesOrder() {
 		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("SalesOrder.fxml"));
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/ikono/desktop/salesorder/SalesOrder.fxml"));
 			Parent salesOrderRoot = loader.load();
 			centerPane.setCenter(salesOrderRoot);
 			currentForm = loader.getController();

@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.pradita.p14.javafx.SalesOrderController">
+<BorderPane xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ikono.desktop.salesorder.SalesOrderController">
     <!-- Top Panel for Navigation and Item Actions -->
     <top>
         <VBox spacing="10">

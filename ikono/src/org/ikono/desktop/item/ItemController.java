@@ -1,4 +1,4 @@
-package edu.pradita.p14.javafx;
+package org.ikono.desktop.item;
 
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -11,6 +11,9 @@ import javafx.util.converter.DoubleStringConverter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import org.ikono.desktop.form.IForm;
+import org.ikono.desktop.main.MainController;
 
 public class ItemController implements IForm{
 

@@ -9,14 +9,14 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.pradita.p14.javafx.SelectFormController">
+<BorderPane xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.ikono.desktop.form.SelectFormController">
     
     <!-- Top Find Section -->
     <top>
         <HBox spacing="10" style="-fx-padding: 10px;">
             <Label text="Find:" style="-fx-font-size: 14px;" />
             <TextField fx:id="textField" />
-            <Button text="Find" onAction="#onFind" />
+            <Button text="Find" onAction="#onFind" />	
         </HBox>
     </top>
 

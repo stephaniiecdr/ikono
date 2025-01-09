@@ -1,4 +1,4 @@
-package edu.pradita.p14.javafx;
+package org.ikono.desktop.salesorder;
 
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -15,6 +15,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.sql.*;
+
+import org.ikono.desktop.form.IForm;
+import org.ikono.desktop.form.SelectFormController;
+import org.ikono.desktop.main.MainController;
 
 public class SalesOrderController implements IForm {
 
@@ -162,7 +166,7 @@ public class SalesOrderController implements IForm {
     private void openSelectForm() {
         try {
             // Load SelectForm.fxml
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("SelectForm.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/ikono/desktop/form/SelectForm.fxml"));
             Parent root = loader.load();
 
             // Get the controller and set the callback
