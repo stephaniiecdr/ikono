@@ -1,0 +1,16 @@
+public interface User {
+        void login();
+    }
+
+    public class UserAdapter implements User {
+        private ExternalUser  externalUser ;
+
+        public UserAdapter(ExternalUser  externalUser ) {
+            this.externalUser  = externalUser ;
+        }
+
+        @Override
+        public void login() {
+            externalUser .externalLogin();
+        }
+    }
