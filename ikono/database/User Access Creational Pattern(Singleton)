@@ -1,0 +1,30 @@
+public class DatabaseConnection {
+        private static DatabaseConnection instance;
+
+        private DatabaseConnection() {
+            // private constructor
+        }
+
+        public static DatabaseConnection getInstance() {
+            if (instance == null) {
+                instance = new DatabaseConnection();
+            }
+            return instance;
+        }
+    }
+    - Structural Pattern(Adapter) =     public interface User {
+        void login();
+    }
+
+    public class UserAdapter implements User {
+        private ExternalUser  externalUser ;
+
+        public UserAdapter(ExternalUser  externalUser ) {
+            this.externalUser  = externalUser ;
+        }
+
+        @Override
+        public void login() {
+            externalUser .externalLogin();
+        }
+    }
