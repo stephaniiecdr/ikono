@@ -1,0 +1,10 @@
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+
+public class UserTest {
+    @Test
+    public void testUsername() {
+        User user = new User("user1", "password1");
+        assertEquals("user1", user.getUsername());
+    }
+}
