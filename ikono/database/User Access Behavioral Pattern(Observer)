@@ -1,0 +1,10 @@
+public interface Observer {
+        void update();
+    }
+
+    public class UserObserver implements Observer {
+        @Override
+        public void update() {
+            System.out.println("User  updated!");
+        }
+    }
