@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.connection.driver_class">org.mariadb.jdbc.Driver</property>
+        <property name="hibernate.connection.url">jdbc:mariadb://localhost:3306/coa_db?useSSL=false&amp;serverTimezone=UTC</property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password"></property>
+        
+        <property name="hibernate.dialect">org.hibernate.dialect.MariaDBDialect</property>
+        <property name="hibernate.hbm2ddl.auto">update</property>
+        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.format_sql">true</property>
+        
+        <!-- Connection pool settings -->
+        <property name="hibernate.connection.pool_size">10</property>
+        
+        <!-- Disable JNDI to avoid warnings -->
+        <property name="hibernate.jndi.class">org.hibernate.engine.jndi.internal.DisabledJndiServiceImpl</property>
+        
+        <!-- Entity mappings -->
+        <mapping class="coaeclipseeee.Account"/>
+        <mapping class="coaeclipseeee.Transaction"/>
+    </session-factory>
+</hibernate-configuration>

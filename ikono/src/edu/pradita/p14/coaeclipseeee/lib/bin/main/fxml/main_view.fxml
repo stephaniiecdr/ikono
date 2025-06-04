@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0"
+            xmlns="http://javafx.com/javafx/21"  xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="coaeclipseeee.MainController">
+
+    <children>
+        <MenuBar prefHeight="26.0" prefWidth="600.0" style="-fx-background-color: grey;">
+            <menus>
+                <Menu mnemonicParsing="false" text="Transaction">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#handleTransactionMenu" text="View Transactions" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Account">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#handleAccountMenu" text="View Accounts" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+
+        <VBox fx:id="contentPane" layoutX="12.0" layoutY="35.0" prefHeight="300.0" prefWidth="575.0" spacing="10.0">
+            <TableView fx:id="trxTable" prefHeight="250.0" prefWidth="575.0">
+                <columns>
+                    <TableColumn fx:id="colTransactionID" prefWidth="80.0" text="ID" />
+                    <TableColumn fx:id="colAccountNumber" prefWidth="120.0" text="Account #" />
+                    <TableColumn fx:id="colDebit" prefWidth="100.0" text="Debit" />
+                    <TableColumn fx:id="colCredit" prefWidth="100.0" text="Credit" />
+                    <TableColumn fx:id="colDescriptionT" prefWidth="175.0" text="Description" />
+                </columns>
+            </TableView>
+
+            <TableView fx:id="accountTable" prefHeight="250.0" prefWidth="575.0" visible="false" managed="false">
+                <columns>
+                    <TableColumn fx:id="colAccNumber" prefWidth="120.0" text="Account #" />
+                    <TableColumn fx:id="colDescriptionA" prefWidth="150.0" text="Description" />
+                    <TableColumn fx:id="colAccType" prefWidth="100.0" text="Type" />
+                    <TableColumn fx:id="colBalance" prefWidth="100.0" text="Balance" />
+                </columns>
+            </TableView>
+        </VBox>
+
+        <Button fx:id="createTrxButton" layoutX="342.0" layoutY="350.0" mnemonicParsing="false" onAction="#handleCreateTransaction" prefHeight="34.0" prefWidth="73.0" style="-fx-background-color: grey;" text="Create" />
+        <Button fx:id="updateTrxButton" layoutX="427.0" layoutY="350.0" mnemonicParsing="false" onAction="#handleUpdateTransaction" prefHeight="34.0" prefWidth="73.0" style="-fx-background-color: grey;" text="Update" />
+        <Button fx:id="deleteTrxButton" layoutX="512.0" layoutY="350.0" mnemonicParsing="false" onAction="#handleDeleteTransaction" prefHeight="34.0" prefWidth="73.0" style="-fx-background-color: grey;" text="Delete" />
+
+        <Button fx:id="createAccButton" layoutX="342.0" layoutY="350.0" mnemonicParsing="false" onAction="#handleCreateAccount" prefHeight="34.0" prefWidth="73.0" style="-fx-background-color: grey;" text="Create" visible="false" />
+        <Button fx:id="updateAccButton" layoutX="427.0" layoutY="350.0" mnemonicParsing="false" onAction="#handleUpdateAccount" prefHeight="34.0" prefWidth="73.0" style="-fx-background-color: grey;" text="Update" visible="false" />
+        <Button fx:id="deleteAccButton" layoutX="512.0" layoutY="350.0" mnemonicParsing="false" onAction="#handleDeleteAccount" prefHeight="34.0" prefWidth="73.0" style="-fx-background-color: grey;" text="Delete" visible="false" />
+    </children>
+</AnchorPane>
