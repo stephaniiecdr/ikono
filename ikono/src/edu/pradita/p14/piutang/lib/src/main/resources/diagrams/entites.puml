@@ -1,0 +1,45 @@
+@startuml Entity Relationship Diagram
+
+!define ENTITY class
+!define PK <color:red><b>PK</b></color>
+!define FK <color:blue><b>FK</b></color>
+!define UK <color:green><b>UK</b></color>
+
+ENTITY Pelunasan {
+    PK idPelunasan: Integer
+    FK piutang: Piutang
+    jumlahBayar: BigDecimal
+    tanggalBayar: LocalDate
+}
+
+ENTITY Piutang {
+    PK idPiutang: Integer
+    FK pembeli: Pembeli
+    namaPelanggan: String
+    jumlah: BigDecimal
+    tanggalPinjam: LocalDate
+    dueDate: LocalDate
+    statusLunas: Boolean
+    pelunasanList: List
+}
+
+ENTITY Pembeli {
+    PK idPembeli: Integer
+    namaLengkap: String
+    alamat: String
+    kota: String
+    kodePos: String
+    noTelepon: String
+    email: String
+    jenisKelamin: String
+    tanggalDaftar: LocalDate
+    status: String
+    piutangList: List
+}
+
+Piutang ||--o{ Pembeli : "has"
+Pelunasan }o--|| Piutang : "belongs to"
+Piutang }o--|| Pembeli : "belongs to"
+Pelunasan ||--o{ Piutang : "has"
+
+@enduml
