@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="Tes untuk metode prosesKoreksiStok" tests="5" skipped="0" failures="0" errors="0" timestamp="2025-06-05T08:45:46.010Z" hostname="CIKIBER" time="0.039">
+  <properties/>
+  <testcase name="Penambahan stok berhasil" classname="com.example.pos.service.KoreksiStokServiceTest$ProsesKoreksiStokTests" time="0.008"/>
+  <testcase name="Produk tidak ditemukan saat koreksi" classname="com.example.pos.service.KoreksiStokServiceTest$ProsesKoreksiStokTests" time="0.009"/>
+  <testcase name="Jumlah koreksi nol atau negatif" classname="com.example.pos.service.KoreksiStokServiceTest$ProsesKoreksiStokTests" time="0.006"/>
+  <testcase name="Pengurangan melebihi stok yang ada" classname="com.example.pos.service.KoreksiStokServiceTest$ProsesKoreksiStokTests" time="0.005"/>
+  <testcase name="Pengurangan stok berhasil" classname="com.example.pos.service.KoreksiStokServiceTest$ProsesKoreksiStokTests" time="0.005"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[Produk dengan ID 99 tidak ditemukan saat proses koreksi.
+]]></system-err>
+</testsuite>

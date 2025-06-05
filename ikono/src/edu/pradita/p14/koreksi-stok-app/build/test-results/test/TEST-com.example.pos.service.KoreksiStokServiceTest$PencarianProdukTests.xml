@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="Tes untuk metode pencarian produk" tests="5" skipped="0" failures="0" errors="0" timestamp="2025-06-05T08:45:45.977Z" hostname="CIKIBER" time="0.029">
+  <properties/>
+  <testcase name="getProdukById - Produk tidak ditemukan" classname="com.example.pos.service.KoreksiStokServiceTest$PencarianProdukTests" time="0.006"/>
+  <testcase name="getProdukByKode - Produk ditemukan" classname="com.example.pos.service.KoreksiStokServiceTest$PencarianProdukTests" time="0.005"/>
+  <testcase name="cariProdukByNama - Ditemukan beberapa produk" classname="com.example.pos.service.KoreksiStokServiceTest$PencarianProdukTests" time="0.004"/>
+  <testcase name="getAllProduk - Mengembalikan semua produk" classname="com.example.pos.service.KoreksiStokServiceTest$PencarianProdukTests" time="0.005"/>
+  <testcase name="getProdukById - Produk ditemukan" classname="com.example.pos.service.KoreksiStokServiceTest$PencarianProdukTests" time="0.004"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

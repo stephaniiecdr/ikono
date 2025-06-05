@@ -1,0 +1,70 @@
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
+}
+
+group 'com.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+// Versi dependensi
+ext {
+    junitVersion = '5.10.0'
+    mockitoVersion = '5.11.0' // Pastikan versi ini ada dan benar
+    hibernateVersion = '5.6.15.Final'
+    // h2Version = '2.2.224' // Hapus jika tidak digunakan
+    log4jVersion = '2.17.1' // atau versi lebih baru yang stabil
+    mysqlConnectorVersion = '8.0.33'
+}
+
+javafx {
+    version = "17.0.6" // Sesuaikan dengan versi JavaFX yang Anda gunakan
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
+}
+
+dependencies {
+    // JavaFX (dikelola oleh plugin)
+
+    // Hibernate ORM
+    implementation "org.hibernate:hibernate-core:${hibernateVersion}"
+
+    // MySQL Connector
+    implementation "mysql:mysql-connector-java:${mysqlConnectorVersion}"
+
+    // Logging (Log4j2)
+    implementation "org.apache.logging.log4j:log4j-api:${log4jVersion}"
+    implementation "org.apache.logging.log4j:log4j-core:${log4jVersion}"
+    // implementation "org.apache.logging.log4j:log4j-slf4j-impl:${log4jVersion}" // Uncomment jika Hibernate memerlukan bridge ke SLF4J
+
+    // --- JUnit 5 (Jupiter) ---
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+
+    // --- Mockito ---
+    // Inti Mockito
+    testImplementation "org.mockito:mockito-core:${mockitoVersion}"
+    // Integrasi Mockito dengan JUnit 5
+    testImplementation "org.mockito:mockito-junit-jupiter:${mockitoVersion}"
+}
+
+application {
+    mainClass = 'com.example.pos.MainApp'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+test {
+    jvmArgs = [
+            '-Dnet.bytebuddy.experimental=true',
+            '-XX:+EnableDynamicAgentLoading'
+    ]
+    useJUnitPlatform() // Penting untuk JUnit 5
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
