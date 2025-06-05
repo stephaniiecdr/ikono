@@ -1,0 +1,111 @@
+@startuml
+!theme materia
+title Activity Diagram: Proses Mutasi Stok
+
+start
+:User mengisi form mutasi dan klik tombol "Proses Mutasi";
+
+partition MainViewController {
+    :Baca input dari UI (Tipe, Barang, Gudang Asal/Tujuan, Jumlah, Keterangan);
+    if (Jumlah kosong?) then (ya)
+        :Tampilkan Alert "Jumlah wajib diisi";
+        stop
+    else (tidak)
+    endif
+    if (Jumlah bukan angka?) then (ya)
+        :Tampilkan Alert "Jumlah harus berupa angka";
+        stop
+    else (tidak)
+        :Parse Jumlah menjadi integer;
+    endif
+
+    if (Tipe Mutasi, Barang, atau Jumlah <= 0 kosong?) then (ya)
+        :Tampilkan Alert "Input Tidak Valid (Tipe, Barang, Jumlah)";
+        stop
+    else (tidak)
+    endif
+
+    if (Tipe == KELUAR atau TRANSFER DAN Gudang Asal == null?) then (ya)
+        :Tampilkan Alert "Gudang Asal wajib diisi";
+        stop
+    else (tidak)
+    endif
+
+    if (Tipe == MASUK atau TRANSFER DAN Gudang Tujuan == null?) then (ya)
+        :Tampilkan Alert "Gudang Tujuan wajib diisi";
+        stop
+    else (tidak)
+    endif
+
+    if (Tipe == TRANSFER DAN Gudang Asal == Gudang Tujuan?) then (ya)
+        :Tampilkan Alert "Gudang Asal dan Tujuan tidak boleh sama";
+        stop
+    else (tidak)
+    endif
+
+    :Buat objek MutasiStok;
+    :Set properti MutasiStok (termasuk tanggalMutasi = now);
+    :Panggil stokService.prosesMutasi(mutasiStok);
+
+    partition StokService {
+        :Dapatkan Sesi Hibernate;
+        :Mulai Transaksi;
+        :Panggil mutasiStokDao.save(session, mutasi);
+        :Dapatkan MutasiStrategy berdasarkan TipeMutasi;
+        if (Strategy tidak ditemukan?) then (ya)
+            :Rollback Transaksi;
+            :Throw IllegalArgumentException;
+            end
+        else (tidak)
+        endif
+        :Panggil strategy.execute(session, mutasi);
+
+        partition MutasiStrategy {
+            if (TipeMutasi == MASUK) then (MASUK)
+                :stokGudangDao.tambahStok();
+            elseif (TipeMutasi == KELUAR) then (KELUAR)
+                :stokGudangDao.kurangiStok();
+            elseif (TipeMutasi == TRANSFER) then (TRANSFER)
+                :stokGudangDao.kurangiStok();
+                :stokGudangDao.tambahStok();
+            endif
+
+            partition StokGudangDao {
+                if (Operasi == tambahStok) then (tambah)
+                    :Cari StokGudang;
+                    if (StokGudang ada?) then (ya)
+                        :Update jumlah stok;
+                    else (tidak)
+                        :Buat StokGudang baru;
+                        :Simpan StokGudang baru;
+                    endif
+                elseif (Operasi == kurangiStok) then (kurangi)
+                    :Cari StokGudang;
+                    if (StokGudang ada?) then (ya)
+                        if (Stok cukup?) then (ya)
+                            :Update jumlah stok;
+                        else (tidak)
+                            :Rollback Transaksi (di StokService);
+                            :Throw RuntimeException "Stok tidak mencukupi";
+                            end
+                        endif
+                    else (tidak)
+                        :Rollback Transaksi (di StokService);
+                        :Throw RuntimeException "Stok tidak ditemukan";
+                        end
+                    endif
+                endif
+            }
+        }
+        :Commit Transaksi;
+    }
+    if (Proses Mutasi Service berhasil?) then (ya)
+        :Tampilkan Alert "Operasi Berhasil";
+        :loadInitialData();
+        :clearForm();
+    else (tidak, terjadi exception)
+        :Tampilkan Alert Error dengan pesan exception;
+    endif
+}
+stop
+@enduml

@@ -1,0 +1,63 @@
+// File: build.gradle (Groovy DSL)
+
+plugins {
+    id 'java'
+    id 'application'
+    // Tambahkan plugin JavaFX
+    id 'org.openjfx.javafxplugin' version '0.1.0' // Pertimbangkan versi lebih baru jika ada masalah
+}
+
+group = 'com.mutasistok'
+version = '1.0-SNAPSHOT' // Ganti '1.0' menjadi '1.0-SNAPSHOT' untuk versi pengembangan
+
+repositories {
+    mavenCentral()
+}
+
+// Konfigurasi untuk JavaFX
+javafx {
+    // Pastikan versi ini SAMA dengan yang Anda gunakan di kode JavaFX Anda
+    // (misalnya, dari MainViewController.java)
+    version = "17.0.10" // Anda menggunakan 17.0.6, sesuaikan jika versi di kode beda
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
+}
+
+application {
+    mainClass = 'com.mutasistok.MainApplication' // Path ke MainApplication.java
+}
+
+dependencies {
+    // Dependensi untuk Hibernate (JPA)
+    implementation 'org.hibernate:hibernate-core:5.6.15.Final'
+
+    // Dependensi untuk konektor database MySQL
+    implementation 'mysql:mysql-connector-java:8.0.33'
+
+    // (Opsional) Dependensi untuk logging
+    // Jika Anda menggunakan slf4j-simple, itu sudah cukup untuk logging dasar.
+    // Jika ingin lebih advance, Anda bisa ganti dengan Logback atau Log4j2.
+    implementation 'org.slf4j:slf4j-simple:1.7.36' // Anda sudah punya ini
+
+    // JUnit 5 Jupiter - API dan Engine
+    // Sebaiknya gunakan versi yang lebih baru dan konsisten
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
+
+    // Mockito (untuk mocking dalam unit test)
+    testImplementation 'org.mockito:mockito-core:5.11.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.11.0' // Untuk integrasi Mockito dengan JUnit 5
+}
+
+// Konfigurasi untuk tugas 'test'
+test {
+    useJUnitPlatform() // Ini sudah benar untuk JUnit 5
+    testLogging {
+        events "passed", "skipped", "failed" // Menampilkan hasil test di console
+    }
+}
+
+// Menentukan versi Java yang digunakan untuk kompilasi
+java {
+    sourceCompatibility = JavaVersion.VERSION_11 // Ganti dengan versi Java yang Anda gunakan (misal: 8, 11, 17)
+    targetCompatibility = JavaVersion.VERSION_11 // Ganti dengan versi Java yang Anda gunakan
+}

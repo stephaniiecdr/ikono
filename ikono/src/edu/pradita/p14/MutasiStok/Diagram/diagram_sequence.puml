@@ -1,0 +1,51 @@
+@startuml
+title Skenario Sukses: Simpan Mutasi Barang Masuk
+
+actor Pengguna
+participant "controller:MainViewController" as Controller
+participant "service:StokService" as Service
+participant "strategy:MasukStrategy" as MasukStrategy
+participant "daoM:MutasiStokDao" as MutasiStokDao
+participant "daoSG:StokGudangDao" as StokGudangDao
+participant "db:Database" as DB
+
+Pengguna -> Controller : submitFormMutasiMasuk(dataForm)
+activate Controller
+
+Controller -> Service : prosesMutasi(mutasiData, idBarang, idGudang, null)
+activate Service
+
+Service -> Service : getMutasiStrategy(TipeMutasi.MASUK)
+Service --> MasukStrategy : <<create>>
+note right of Service : Strategi MASUK dipilih
+
+Service -> MasukStrategy : proses(mutasi, barang, gudang, null)
+activate MasukStrategy
+
+MasukStrategy -> daoSG : findById(stokGudangId)
+activate daoSG
+daoSG -> DB : SELECT StokGudang
+DB --> daoSG : dataStokGudang
+deactivate daoSG
+MasukStrategy -> MasukStrategy : hitungStokBaru(dataStokGudang, jumlahMutasi)
+MasukStrategy -> daoSG : update(stokGudangDiperbarui)
+activate daoSG
+daoSG -> DB : UPDATE StokGudang
+DB --> daoSG : sukses
+deactivate daoSG
+
+MasukStrategy -> daoM : save(mutasiStokBaru)
+activate daoM
+daoM -> DB : INSERT MutasiStok
+DB --> daoM : sukses
+deactivate daoM
+
+MasukStrategy --> Service : void
+deactivate MasukStrategy
+Service --> Controller : void
+deactivate Service
+
+Controller -> Pengguna : tampilkanPesanSukses()
+deactivate Controller
+
+@enduml

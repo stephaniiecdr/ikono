@@ -1,0 +1,196 @@
+@startuml
+!theme materia
+
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Arial
+skinparam Linetype ortho
+
+package com.mutasistok.model {
+    class Barang {
+        - id: Long
+        - kodeBarang: String
+        - namaBarang: String
+        - deskripsi: String
+        + getId(): Long
+        + getKodeBarang(): String
+        + getNamaBarang(): String
+    }
+
+
+    class Gudang {
+        - id: int
+        - kodeGudang: String
+        - namaGudang: String
+        - alamat: String
+        + getId(): int
+        + getKodeGudang(): String
+        + getNamaGudang(): String
+    }
+
+    enum TipeMutasi {
+        MASUK
+        KELUAR
+        TRANSFER
+    }
+
+    class MutasiStok {
+        - id: Long
+        - tipeMutasi: TipeMutasi
+        - jumlah: int
+        - tanggalMutasi: LocalDateTime
+        - keterangan: String
+        + getBarang(): Barang
+        + getGudangAsal(): Gudang
+        + getGudangTujuan(): Gudang
+        + getTipeMutasi(): TipeMutasi
+        + getJumlah(): int
+    }
+
+    MutasiStok "1" *-- "1" Barang : barang
+    MutasiStok "1" *-- "1" TipeMutasi : tipeMutasi
+    MutasiStok "1" -- "0..1" Gudang : gudangAsal
+    MutasiStok "1" -- "0..1" Gudang : gudangTujuan
+
+    class StokGudangId {
+        - barangId: Long
+        - gudangId: int
+    }
+    note on link: JPA @Embeddable
+
+    class StokGudang {
+        - stok: int
+        + getBarang(): Barang
+        + getGudang(): Gudang
+        + getStok(): int
+    }
+    note on link: JPA @Entity
+    StokGudang "1" *-- "1" StokGudangId : id (EmbeddedId)
+    StokGudang "1" -- "1" Barang : barang (via MapsId)
+    StokGudang "1" -- "1" Gudang : gudang (via MapsId)
+
+}
+
+package com.mutasistok.dao {
+    class BarangDao {
+        + save(barang: Barang): void
+        + getAll(): List<Barang>
+    }
+    BarangDao ..> HibernateUtil
+    BarangDao ..> Barang
+
+    class GudangDao {
+        + save(gudang: Gudang): void
+        + getById(id: int): Gudang
+        + getAll(): List<Gudang>
+    }
+    GudangDao ..> HibernateUtil
+    GudangDao ..> Gudang
+
+    class MutasiStokDao {
+        + save(session: Session, mutasi: MutasiStok): void
+        + getAll(): List<MutasiStok>
+    }
+    MutasiStokDao ..> HibernateUtil
+    MutasiStokDao ..> MutasiStok
+
+    class StokGudangDao {
+        - getStokGudang(session: Session, barangId: Long, gudangId: int): StokGudang
+        + tambahStok(session: Session, barangId: Long, gudangId: int, jumlah: int): void
+        + kurangiStok(session: Session, barangId: Long, gudangId: int, jumlah: int): void
+    }
+    StokGudangDao ..> HibernateUtil
+    StokGudangDao ..> StokGudang
+    StokGudangDao ..> StokGudangId
+    StokGudangDao ..> Barang
+    StokGudangDao ..> Gudang
+}
+
+package com.mutasistok.util {
+    class HibernateUtil {
+        - {static} sessionFactory: SessionFactory
+        + {static} getSessionFactory(): SessionFactory
+        + {static} shutdown(): void
+    }
+}
+
+package com.mutasistok.service.strategy {
+    interface MutasiStrategy {
+        + execute(session: Session, mutasi: MutasiStok): void
+    }
+
+    class MasukStrategy implements MutasiStrategy {
+        - stokGudangDao: StokGudangDao
+        + execute(session: Session, mutasi: MutasiStok): void
+    }
+    MasukStrategy ..> StokGudangDao
+    MasukStrategy ..> MutasiStok
+
+    class KeluarStrategy implements MutasiStrategy {
+        - stokGudangDao: StokGudangDao
+        + execute(session: Session, mutasi: MutasiStok): void
+    }
+    KeluarStrategy ..> StokGudangDao
+    KeluarStrategy ..> MutasiStok
+
+    class TransferStrategy implements MutasiStrategy {
+        - stokGudangDao: StokGudangDao
+        + execute(session: Session, mutasi: MutasiStok): void
+    }
+    TransferStrategy ..> StokGudangDao
+    TransferStrategy ..> MutasiStok
+}
+
+package com.mutasistok.service {
+    class StokService {
+        - mutasiStokDao: MutasiStokDao
+        - stokGudangDao: StokGudangDao
+        - strategies: Map<TipeMutasi, MutasiStrategy>
+        + prosesMutasi(mutasi: MutasiStok): void
+    }
+    StokService o-- MutasiStrategy : strategies
+    StokService ..> MutasiStokDao
+    StokService ..> StokGudangDao
+    StokService ..> MutasiStok
+    StokService ..> HibernateUtil
+}
+
+package com.mutasistok.controller {
+    class MainViewController {
+        - tipeMutasiComboBox: ComboBox<TipeMutasi>
+        - barangComboBox: ComboBox<Barang>
+        - gudangAsalComboBox: ComboBox<Gudang>
+        - gudangTujuanComboBox: ComboBox<Gudang>
+        - jumlahField: TextField
+        - mutasiTableView: TableView<MutasiStok>
+        - barangDao: BarangDao
+        - gudangDao: GudangDao
+        - mutasiStokDao: MutasiStokDao
+        - stokService: StokService
+        + initialize(): void
+        - handleProsesMutasi(): void
+        - loadInitialData(): void
+    }
+    MainViewController ..> BarangDao
+    MainViewController ..> GudangDao
+    MainViewController ..> MutasiStokDao
+    MainViewController ..> StokService
+    MainViewController ..> TipeMutasi
+    MainViewController ..> Barang
+    MainViewController ..> Gudang
+    MainViewController ..> MutasiStok
+}
+
+package com.mutasistok {
+    class MainApplication {
+        + start(stage: Stage): void
+        + {static} main(args: String[]): void
+    }
+    MainApplication ..> MainViewController : loads
+    note on link: via FXML
+}
+
+"javafx.application.Application" <|-- MainApplication
+"javafx.fxml.Initializable" <|.. MainViewController : (implicitly if initialize() is present)
+
+hide empty members
+@enduml
