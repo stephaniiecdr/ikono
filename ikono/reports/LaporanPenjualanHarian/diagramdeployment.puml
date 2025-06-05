@@ -1,0 +1,68 @@
+@startuml
+skinparam node {
+  BackgroundColor LightSkyBlue
+  BorderColor DimGray
+  FontName Segoe UI
+  FontSize 12
+  StereotypeFontColor #505050
+}
+skinparam artifact {
+  BackgroundColor PaleGreen
+  BorderColor DimGray
+  FontName Segoe UI
+  FontSize 11
+}
+skinparam database {
+  BackgroundColor Wheat
+  BorderColor DimGray
+}
+skinparam cloud {
+  BackgroundColor LightPink
+  BorderColor DimGray
+}
+skinparam communicationPath {
+  LineColor DimGray
+  FontName Segoe UI
+  FontSize 10
+}
+skinparam rectangle {
+    roundCorner 15
+}
+
+title Diagram Deployment - Aplikasi Laporan Penjualan Harian
+
+node "Komputer Pengguna (Desktop)" as UserDesktop {
+  artifact "Aplikasi Laporan Harian (JavaFX)" <<Executable>> as AppExecutable {
+  }
+  artifact "JRE/JDK 21 (Embedded atau Terinstal)" as JavaRuntime
+}
+
+node "Server Database (Localhost)" as DbServer {
+  database "MySQL Database" as MySQL_DB {
+    artifact "laporan_penjualan_db" <<Schema>>
+  }
+  artifact "MySQL Server" as MySQL_Server_Process
+}
+
+artifact "JavaFX SDK (modules)" as JavaFX_Lib
+artifact "Hibernate ORM" as Hibernate_Lib
+artifact "MySQL Connector/J" as MySQL_Driver
+
+UserDesktop ..> JavaRuntime : "membutuhkan untuk eksekusi"
+AppExecutable --|> UserDesktop : "ter-deploy di"
+MySQL_DB --|> DbServer : "ter-deploy di"
+MySQL_Server_Process --|> DbServer : "berjalan di"
+
+AppExecutable ..> JavaFX_Lib : "dependensi"
+AppExecutable ..> Hibernate_Lib : "dependensi"
+AppExecutable ..> MySQL_Driver : "menggunakan" ' Hubungan ini juga bisa dianggap dependensi
+
+MySQL_Driver ..> MySQL_DB : "terhubung via JDBC (TCP/IP)"
+
+
+note right of UserDesktop
+  Pengguna menjalankan aplikasi
+  laporan penjualan dari komputer ini.
+end note
+
+@enduml

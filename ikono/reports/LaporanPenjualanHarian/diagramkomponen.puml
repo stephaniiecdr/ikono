@@ -1,0 +1,116 @@
+@startuml
+' Pengaturan tampilan untuk diagram komponen
+skinparam component {
+  BackgroundColor LightSkyBlue
+  BorderColor DimGray
+  ArrowColor DimGray
+  FontName Segoe UI
+  FontSize 12
+}
+skinparam interface {
+  BackgroundColor PaleGreen
+  BorderColor DimGray
+  FontName Segoe UI
+  FontSize 11
+}
+skinparam node {
+  BackgroundColor LightGray
+  BorderColor Black
+  FontName Segoe UI
+  FontSize 12
+}
+skinparam database {
+  BackgroundColor Wheat
+  BorderColor DimGray
+}
+skinparam rectangle {
+    roundCorner 15
+}
+
+title Diagram Komponen - Aplikasi Laporan Penjualan Harian
+
+node "Mesin Klien (Desktop Pengguna)" as ClientNode {
+
+  rectangle "Aplikasi Laporan Penjualan Harian" <<Executable>> as AppExecutable {
+
+    component "Modul UI (JavaFX)" as UI_JavaFX {
+      [PenjualanHarianView] <<View>>
+      [PenjualanHarianApp] <<Main Application>>
+    }
+
+    component "Modul Presenter" as PresenterLogic {
+      [PenjualanHarianPresenter] <<Presenter>>
+    }
+
+    component "Modul Data (Bisnis & Adaptasi)" as DataModule {
+      [TransactionAdapter] <<Adapter>>
+      [SalesReportItemDTO] <<DTO>>
+    }
+
+    component "Modul Repository (Akses Data)" as RepoModule {
+      [HibernateSalesReportRepository] <<Repository Implementation>>
+      interface "SalesReportRepository" as ISalesRepo
+    }
+
+    component "Modul Utilitas" as UtilModule {
+      [HibernateUtil] <<Utility>>
+      [PaymentStatus] <<Enum>>
+      [User] <<Entity>>
+      [Product] <<Entity>>
+      [Transaction] <<Entity>>
+    }
+  }
+
+  artifact "JavaFX SDK" as JavaFX_SDK
+  artifact "Hibernate ORM" as Hibernate_ORM
+  artifact "MySQL Connector/J" as MySQL_Driver
+  artifact "SLF4J (Logging)" as SLF4J
+  artifact "JUnit & Mockito (Testing)" as TestingLibs
+
+}
+
+node "Server Database" as DbServerNode {
+  database "Database Penjualan (MySQL)" as SalesDB
+}
+
+UI_JavaFX --> PresenterLogic : "interaksi UI-Presenter"
+PresenterLogic --> ISalesRepo : "menggunakan kontrak repository"
+RepoModule ..|> ISalesRepo : "mengimplementasikan"
+RepoModule --> DataModule : "menggunakan DTO & Adapter"
+DataModule --> UtilModule : "menggunakan Entitas" ' Adapter menggunakan Transaction, DTO mungkin juga
+RepoModule --> UtilModule : "menggunakan Entitas & HibernateUtil"
+
+AppExecutable ..> JavaFX_SDK : "dibangun dengan"
+RepoModule ..> Hibernate_ORM : "menggunakan untuk ORM"
+UtilModule ..> Hibernate_ORM : "Entitas menggunakan anotasi Hibernate/JPA"
+Hibernate_ORM ..> MySQL_Driver : "menggunakan untuk koneksi DB"
+AppExecutable ..> SLF4J : "menggunakan untuk logging"
+
+RepoModule ..> SalesDB : "mengakses via Hibernate & JDBC"
+Hibernate_ORM ..> SalesDB : "memetakan ke"
+
+PresenterLogic -(0- ISalesRepo : "membutuhkan"
+RepoModule -0)- ISalesRepo : "menyediakan"
+
+note right of UI_JavaFX
+  Bertanggung jawab atas semua
+  interaksi dengan pengguna dan
+  tampilan antarmuka grafis.
+end note
+
+note right of PresenterLogic
+  Bertindak sebagai perantara,
+  memproses input pengguna dari UI
+  dan mengambil data dari Repository.
+end note
+
+note right of RepoModule
+  Menangani semua logika akses data
+  ke database menggunakan Hibernate.
+end note
+
+note left of SalesDB
+  Penyimpanan data transaksi,
+  produk, dan pengguna.
+end note
+@enduml

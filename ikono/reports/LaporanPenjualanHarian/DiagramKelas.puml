@@ -1,0 +1,154 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam roundcorner 20
+skinparam shadowing false
+skinparam stereotypeCBackgroundColor PaleTurquoise
+skinparam stereotypeIBackgroundColor PaleGreen
+skinparam classBackgroundColor WhiteSmoke
+skinparam classBorderColor #505050
+skinparam classArrowColor #505050
+skinparam defaultFontName Segoe UI
+skinparam defaultFontSize 12
+skinparam packageStyle rectangle
+title DiagranClass
+
+package "user" <<Application>> {
+  class PenjualanHarianApp extends javafx.application.Application {
+    + {static} main(String[] args): void
+    + start(javafx.stage.Stage primaryStage): void
+  }
+}
+  class PenjualanHarianView {
+    - datePicker: javafx.scene.control.DatePicker
+    - reportTable: javafx.scene.control.TableView<SalesReportItemDTO>
+    - salesReportsData: javafx.collections.ObservableList<SalesReportItemDTO>
+    - totalSalesLabel: javafx.scene.control.Label
+    - loadButton: javafx.scene.control.Button
+    - scene: javafx.scene.Scene
+    + PenjualanHarianView()
+    - initComponents(): void
+    - setupTableColumns(): void
+    + getScene(): javafx.scene.Scene
+    + getDatePicker(): javafx.scene.control.DatePicker
+    + getLoadButton(): javafx.scene.control.Button
+    + setSalesReports(javafx.collections.ObservableList<SalesReportItemDTO> reports): void
+    + setTotalSales(double totalSales): void
+    + clearReport(): void
+    + showAlert(javafx.scene.control.Alert.AlertType alertType, String title, String message): void
+  }
+
+  class PenjualanHarianPresenter {
+    - view: PenjualanHarianView
+    - repository: SalesReportRepository
+    + PenjualanHarianPresenter(PenjualanHarianView view, SalesReportRepository repository)
+    - attachEvents(): void
+    + loadDailyReport(): void
+  }
+
+
+
+package "repository" <<DataAccess>> {
+  interface SalesReportRepository {
+    + findDailySales(java.time.LocalDate date): java.util.List<SalesReportItemDTO>
+  }
+
+  class HibernateSalesReportRepository implements SalesReportRepository {
+    - transactionAdapter: TransactionAdapter
+    + HibernateSalesReportRepository()
+    + findDailySales(java.time.LocalDate date): java.util.List<SalesReportItemDTO>
+  }
+}
+
+package "adapter" <<ApplicationLayer>> {
+  class TransactionAdapter {
+    + toSalesReportItemDTO(Transaction transaction): SalesReportItemDTO
+  }
+}
+
+package "model" <<Domain>> {
+  class Transaction <<Entity>> {
+    - transactionId: Integer
+    - user: User
+    - product: Product
+    - transactionDate: java.time.LocalDateTime
+    - quantity: int
+    - totalPrice: java.math.BigDecimal
+    - paymentStatus: PaymentStatus
+    + "<<getters/setters>>"
+  }
+
+  class User <<Entity>> {
+    - userId: Integer
+    - username: String
+    - email: String
+    - password: String
+    + "<<getters/setters>>"
+  }
+
+  class Product <<Entity>> {
+    - productId: Integer
+    - productName: String
+    - price: java.math.BigDecimal
+    - stock: int
+    + "<<getters/setters>>"
+  }
+
+    enum PaymentStatus {
+    pending
+    completed
+    failed
+  }
+}
+
+package "model.dto" <<Application>> {
+  class SalesReportItemDTO <<DTO>> {
+    - orderNo: javafx.beans.property.SimpleStringProperty
+    - customerName: javafx.beans.property.SimpleStringProperty
+    - quantity: javafx.beans.property.SimpleIntegerProperty
+    - totalPrice: javafx.beans.property.SimpleDoubleProperty
+    - paymentStatus: javafx.beans.property.SimpleStringProperty
+    - productDescription: javafx.beans.property.SimpleStringProperty
+    + SalesReportItemDTO(String, String, int, java.math.BigDecimal, String, String)
+    + "<<property_getters_and_methods>>"
+  }
+}
+
+  class HibernateUtil {
+    - {static} sessionFactory: org.hibernate.SessionFactory
+    + {static} getSessionFactory(): org.hibernate.SessionFactory
+    + {static} shutdown(): void
+  }
+
+PenjualanHarianApp o--> PenjualanHarianView
+PenjualanHarianApp o--> PenjualanHarianPresenter
+PenjualanHarianApp ..> HibernateSalesReportRepository : creates/initializes
+
+PenjualanHarianPresenter o--> PenjualanHarianView : interacts with
+PenjualanHarianPresenter o--> SalesReportRepository : uses
+
+HibernateSalesReportRepository o--> TransactionAdapter : uses
+HibernateSalesReportRepository ..> HibernateUtil : uses
+HibernateSalesReportRepository ..> Transaction : queries for
+
+TransactionAdapter ..> Transaction : dapet dari
+TransactionAdapter ..> SalesReportItemDTO : hasilnya
+
+Transaction "1" *--> "1" User : terhubung
+Transaction "1" *--> "1" Product : terhubung
+Transaction --> PaymentStatus : statusnya
+
+SalesReportItemDTO -[hidden]-> PenjualanHarianView : 'DTO for TableView'
+
+
+note right of PenjualanHarianApp
+  Titik masuk utama aplikasi.
+  Menginisialisasi dan menampilkan UI.
+end note
+
+note right of PenjualanHarianPresenter
+  Sebagai perantara antara View dan Repository.
+  Berisi logika presentasi untuk laporan.
+end note
+
+@enduml

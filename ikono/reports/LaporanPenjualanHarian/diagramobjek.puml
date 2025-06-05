@@ -1,0 +1,107 @@
+@startuml
+skinparam object {
+  BackgroundColor LightGoldenRodYellow
+  BorderColor DimGray
+  ArrowColor DimGray
+  AttributeIconSize 0
+}
+skinparam defaultFontName Segoe UI
+skinparam defaultFontSize 11
+title Diagram Objek:Laporan Penjualan Harian
+
+object "app:PenjualanHarianApp" as App
+object "tampilanLaporan:PenjualanHarianView" as View
+object "presenterLaporan:PenjualanHarianPresenter" as Presenter
+object "penyimpananLaporan:HibernateSalesReportRepository" as Repository
+object "adapterData:TransactionAdapter" as Adapter
+object "utilitasDb:HibernateUtil" as DbUtil
+
+object "penggunaBudi:User" as UserBudi {
+  username = "Budi Santoso"
+  email = "budi@example.com"
+}
+object "penggunaCitra:User" as UserCitra {
+  username = "Citra Lestari"
+  email = "citra@example.com"
+}
+
+object "produkKopi:Product" as ProductKopi {
+  productName = "Kopi Susu Aren"
+  price = 18000.00
+}
+object "produkRoti:Product" as ProductRoti {
+  productName = "Roti Cokelat Keju"
+  price = 12000.00
+}
+
+object "transaksi101:Transaction" as Tx101 {
+  transactionId = 101
+  transactionDate = "2024-06-05T10:30:00"
+  quantity = 2
+  totalPrice = 36000.00
+  paymentStatus = completed
+}
+object "transaksi102:Transaction" as Tx102 {
+  transactionId = 102
+  transactionDate = "2024-06-05T11:15:00"
+  quantity = 1
+  totalPrice = 12000.00
+  paymentStatus = pending
+}
+
+object "itemLaporan1:SalesReportItemDTO" as DTO1 {
+  orderNo = "101"
+  customerName = "Budi Santoso"
+  quantity = 2
+  totalPrice = 36000.00
+  paymentStatus = "completed"
+  productDescription = "Kopi Susu Aren"
+}
+object "itemLaporan2:SalesReportItemDTO" as DTO2 {
+  orderNo = "102"
+  customerName = "Citra Lestari"
+  quantity = 1
+  totalPrice = 12000.00
+  paymentStatus = "pending"
+  productDescription = "Roti Cokelat Keju"
+}
+
+View : datePicker.value = "2024-06-05"
+View : reportTable.items = [itemLaporan1, itemLaporan2]
+View : totalSalesLabel.text = "Total: Rp 48000.00"
+App --> View : "menginisialisasi dan menampilkan"
+App --> Presenter : "menginisialisasi"
+App ..> Repository : "menginisialisasi (dependency injection)"
+
+Presenter --> View : "berinteraksi dengan (viewRef)"
+Presenter --> Repository : "menggunakan (repoRef)"
+
+Repository --> Adapter : "menggunakan (adapterRef)"
+Repository ..> DbUtil : "menggunakan untuk sesi DB"
+
+Adapter ..> Tx101 : "mengubah (saat proses)"
+Adapter ..> DTO1 : "menghasilkan (saat proses)"
+Adapter ..> Tx102 : "mengubah (saat proses)"
+Adapter ..> DTO2 : "menghasilkan (saat proses)"
+
+
+Tx101 --> UserBudi : "dilakukan_oleh"
+Tx101 --> ProductKopi : "melibatkan_produk"
+
+Tx102 --> UserCitra : "dilakukan_oleh"
+Tx102 --> ProductRoti : "melibatkan_produk"
+
+note bottom of Presenter
+  Objek Presenter mengoordinasikan pengambilan
+  data dari Repository dan menampilkannya
+  ke View setelah tanggal dipilih dan
+  tombol "Load Report" ditekan.
+end note
+
+note bottom of Adapter
+  Objek Adapter mengubah data mentah
+  Transaksi dari database menjadi format
+  ItemLaporan yang siap ditampilkan.
+end note
+@enduml
+
